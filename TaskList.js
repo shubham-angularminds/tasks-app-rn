@@ -16,17 +16,14 @@ import {
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import Tasks from "./TaskData";
+import moment from "moment";
+import { Button } from "react-native";
 
 const formatDate = (date) => {
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-  return new Intl.DateTimeFormat("en-IN", options).format(date);
+  return moment(date).format("DD MMMM yyyy");
 };
 
-const TasksList = () => {
+const TasksList = ({ navigation }) => {
   const handleClick = () => {
     console.log("I am Pressed");
   };
@@ -41,7 +38,13 @@ const TasksList = () => {
         <Heading fontSize="xl" color="white">
           Tasks List
         </Heading>
+        <Button
+          colorScheme="success"
+          title="Go to create task"
+          onPress={() => navigation.navigate("CreateTask", { name: "Shubham" })}
+        />
       </Center>
+
       <VStack space={4} alignItems="center" px="3">
         {Tasks.map((data, index) => (
           <Flex
@@ -57,6 +60,7 @@ const TasksList = () => {
             bg="coolGray.100"
             p="5"
             flex="1"
+            w="full"
           >
             <Box flexBasis="0" flexGrow="1">
               <HStack alignItems="center">
