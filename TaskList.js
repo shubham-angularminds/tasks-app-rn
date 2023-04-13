@@ -18,29 +18,36 @@ import { AntDesign } from "@expo/vector-icons";
 import Tasks from "./TaskData";
 import moment from "moment";
 import { Button } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+
 
 const formatDate = (date) => {
   return moment(date).format("DD MMMM yyyy");
 };
 
-const TasksList = ({ navigation }) => {
+const TasksList = () => {
+  const navigation = useNavigation();
+
+
   const handleClick = () => {
     console.log("I am Pressed");
   };
 
   const handleAddTask = () => {
     console.log("Add Task Button Clicked");
+    navigation.navigate("CreateTask", { name: "Shubham" });
   };
 
   return (
     <ScrollView w="full" showsVerticalScrollIndicator={false}>
-      <Center mt="10" mb="8" py="4" bg="blue.700" color="white">
-        <Heading fontSize="xl" color="white">
+      <Center mb="8" py="4" bg="blue.700" color="white">
+        <Heading fontSize="xl" color="white" mb="4">
           Tasks List
         </Heading>
         <Button
-          colorScheme="success"
-          title="Go to create task"
+          colorScheme="primary"
+          title="Create Task"
           onPress={() => navigation.navigate("CreateTask", { name: "Shubham" })}
         />
       </Center>
@@ -76,7 +83,7 @@ const TasksList = ({ navigation }) => {
                 </Badge>
                 <Spacer />
                 <Text fontSize={10} color="coolGray.800">
-                  {formatDate(data.dueDate)}
+                 Due by {formatDate(data.dueDate)}
                 </Text>
                 <Spacer />
                 <Pressable onPress={handleClick}>

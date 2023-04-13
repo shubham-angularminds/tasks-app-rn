@@ -3,7 +3,7 @@ import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TasksList from "./TaskList";
-import CreateTask from "./createTask";
+import CreateTask from "./CreateTask";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,12 +17,10 @@ export default function App() {
           <Stack.Screen
             name="Home"
             component={TasksList}
-            options={{ title: "Welcome" }}
           />
           <Stack.Screen name="CreateTask" component={CreateTask} />
         </Stack.Navigator>
       </NavigationContainer>
-      <TasksList />
     </NativeBaseProvider>
   );
 }
