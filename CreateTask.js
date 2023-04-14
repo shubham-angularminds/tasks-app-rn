@@ -1,47 +1,70 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
   VStack,
   Button,
   FormControl,
   Input,
+  Stack,
   NativeBaseProvider,
   Center,
   Select,
   CheckIcon,
+  Box,
 } from "native-base";
 import { useState } from "react";
 import { Button as Btn } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function BuildingAFormExample() {
-  const [formData, setData] = React.useState({});
+  const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [service, setService] = React.useState("");
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [tasksData, setTasksData] = React.useState([]);
 
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
+  const clearAsyncStorage = async () => {
+    AsyncStorage.clear();
   };
 
-  const showMode = (currentMode) => {
-    if (Platform.OS === 'android') {
-      setShow(false);
-      // for iOS, add a button that closes the picker
+  const storeData = async (value) => {
+    try {
+      let existingTransactions = await getData();
+      const updatedTransactions = [...existingTransactions, value];
+      console.log("updated transactins : ", updatedTransactions);
+
+      await AsyncStorage.setItem(
+        "taskData",
+        JSON.stringify(updatedTransactions)
+      );
+
+      // let currentValue = await getData().then((data) => data) || [];
+      // console.log("current value ", currentValue);
+      // totalValue = [...currentValue, value];
+      // const jsonValue = JSON.stringify(totalValue);
+      // await AsyncStorage.setItem("taskData", jsonValue);
+    } catch (err) {
+      // saving error
+      console.log(err);
     }
-    setMode(currentMode);
   };
 
-  const showDatepicker = () => {
-    showMode('date');
+  const getData = async () => {
+    let transactions = await AsyncStorage.getItem("taskData");
+    if (transactions) {
+      return JSON.parse(transactions);
+    } else {
+      return [];
+    }
   };
 
-  const showTimepicker = () => {
-    showMode('time');
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
   };
 
   const validate = () => {
@@ -56,89 +79,58 @@ function BuildingAFormExample() {
   };
 
   const onSubmit = () => {
-    validate() ? console.log(formData) : console.log("Validation Failed");
+    console.log("form Data: ", formData);
+    storeData(formData);
+    // validate() ? console.log(formData) : console.log("Validation Failed");
+  };
+
+  const handleTitleInputChange = (value) => {
+    setFormData({ ...formData, title: value });
+  };
+
+  const handleDescriptionInputChange = (value) => {
+    setFormData({ ...formData, description: value });
+  };
+
+  const handleConfirm = (date) => {
+    setFormData({ ...formData, dueDate: date });
+    hideDatePicker();
   };
 
   return (
-    <VStack width="90%" mx="3" maxW="300px">
-      <FormControl isRequired isInvalid={"name" in errors}>
-        <FormControl.Label
-          _text={{
-            bold: true,
-          }}
-        >
-          Title
-        </FormControl.Label>
+    <VStack width="100%">
+      <FormControl>
+        <FormControl.Label>Title</FormControl.Label>
         <Input
-          placeholder="John"
-          onChangeText={(value) => setData({ ...formData, title: value })}
+          variant="underlined"
+          p={2}
+          placeholder="Title"
+          onChangeText={handleTitleInputChange}
         />
-        {"title" in errors ? (
-          <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
-        ) : (
-          <FormControl.HelperText>
-            Title should contain atleast 3 character.
-          </FormControl.HelperText>
-        )}
-      </FormControl>
-      <FormControl isRequired isInvalid={"description" in errors}>
-        <FormControl.Label
-          _text={{
-            bold: true,
-          }}
-        >
-          Description
-        </FormControl.Label>
+        <FormControl.Label>Description</FormControl.Label>
         <Input
+          variant="underlined"
+          p={2}
           placeholder="Description"
-          onChangeText={(value) => setData({ ...formData, description: value })}
+          onChangeText={handleDescriptionInputChange}
         />
-        {"description" in errors ? (
-          <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
-        ) : (
-          <FormControl.HelperText>
-            Description should contain atleast 3 character.
-          </FormControl.HelperText>
-        )}
+
+        <Button onPress={showDatePicker} colorScheme="cyan">
+          Select Date
+        </Button>
+        <Box mt="5">
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
+        </Box>
+
+        <Button onPress={onSubmit} mt="5" colorScheme="cyan">
+          Submit
+        </Button>
       </FormControl>
-{/* 
-      <Btn onPress={showDatepicker} title="Show date picker!" mt="5" colorScheme="cyan"/>
-      <Btn onPress={showTimepicker} title="Show time picker!" mt="5" colorScheme="cyan"/>
-      <Text>selected: {date.toLocaleString()}</Text> */}
-
-      <Btn onPress={showDatepicker} title="Show date picker!" />
-      <Btn onPress={showTimepicker} title="Show time picker!" />
-      <Text>selected: {date.toLocaleString()}</Text>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          onChange={onChange}
-        />
-      )}
-
-      {/* <Select
-        selectedValue={service}
-        minWidth="200"
-        accessibilityLabel="Choose Status"
-        placeholder="Choose Status"
-        _selectedItem={{
-          bg: "teal.600",
-          endIcon: <CheckIcon size="5" />,
-        }}
-        mt={1}
-        onValueChange={(itemValue) => setService(itemValue)}
-      >
-        <Select.Item label="Started" value="Started" />
-        <Select.Item label="Pending" value="Pending" />
-        <Select.Item label="Completed" value="Completed" />
-      </Select> */}
-
-      <Button onPress={onSubmit} mt="5" colorScheme="cyan">
-        Submit
-      </Button>
     </VStack>
   );
 }

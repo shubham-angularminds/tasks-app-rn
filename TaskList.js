@@ -19,8 +19,8 @@ import Tasks from "./TaskData";
 import moment from "moment";
 import { Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const formatDate = (date) => {
   return moment(date).format("DD MMMM yyyy");
@@ -28,7 +28,21 @@ const formatDate = (date) => {
 
 const TasksList = () => {
   const navigation = useNavigation();
+  const [tasks, setTasks] = useState([]);
 
+  const getData = async () => {
+    let transactions = await AsyncStorage.getItem("taskData");
+    if (transactions) {
+      return JSON.parse(transactions);
+    } else {
+      return [];
+    }
+  };
+
+  useEffect(async () => {
+    const SavedTasks = await getData();
+    setTasks(SavedTasks);
+  }, []);
 
   const handleClick = () => {
     console.log("I am Pressed");
@@ -38,6 +52,8 @@ const TasksList = () => {
     console.log("Add Task Button Clicked");
     navigation.navigate("CreateTask", { name: "Shubham" });
   };
+
+  console.log("tasks : ", tasks);
 
   return (
     <ScrollView w="full" showsVerticalScrollIndicator={false}>
@@ -53,7 +69,7 @@ const TasksList = () => {
       </Center>
 
       <VStack space={4} alignItems="center" px="3">
-        {Tasks.map((data, index) => (
+        {tasks?.map((data, index) => (
           <Flex
             key={data.id}
             alignItems="center"
@@ -79,11 +95,11 @@ const TasksList = () => {
                   variant="solid"
                   rounded="2"
                 >
-                  {data.status}
+                  {""}
                 </Badge>
                 <Spacer />
                 <Text fontSize={10} color="coolGray.800">
-                 Due by {formatDate(data.dueDate)}
+                  Due by {formatDate(data?.dueDate)}
                 </Text>
                 <Spacer />
                 <Pressable onPress={handleClick}>
