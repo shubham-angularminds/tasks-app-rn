@@ -18,16 +18,15 @@ import {
 import { useState } from "react";
 import { Button as Btn } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { addTask, deleteTask } from "../actions";
-import uuid from "react-native-uuid";
+import { updateTask } from "../actions";
 
-const CreateTask = ({ navigation }) => {
+const EditTask = ({ route, navigation }) => {
   const dispatch = useDispatch();
+  const { task } = route.params;
 
-  const [formData, setData] = React.useState({});
+  const [formData, setData] = React.useState(task);
   const [errors, setErrors] = React.useState({});
   const [success, setSuccess] = useState(false);
-
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -47,7 +46,7 @@ const CreateTask = ({ navigation }) => {
             <HStack space={2} flexShrink={1}>
               <Alert.Icon mt="1" />
               <Text fontSize="md" color="coolGray.800">
-                "Task is Created Succesfully"
+                "Task is Updated Succesfully"
               </Text>
             </HStack>
             <IconButton
@@ -66,9 +65,7 @@ const CreateTask = ({ navigation }) => {
     );
   }
 
-
   const handleConfirm = (date) => {
-    console.warn("A date has been picked: ", date);
     setData({ ...formData, date: date });
     hideDatePicker();
   };
@@ -85,15 +82,13 @@ const CreateTask = ({ navigation }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+
   const onSubmit = () => {
-    console.log("form data : ", formData);
     if (validate()) {
       const task = {
-        id: uuid.v4(),
-        completed: false,
         ...formData,
       };
-      dispatch(addTask(task));
+      dispatch(updateTask(task));
       setSuccess(true);
     }
   };
@@ -103,9 +98,10 @@ const CreateTask = ({ navigation }) => {
       <Box w="100%" maxWidth="300px">
         <FormControl isRequired>
           <Stack mx="4">
-            <FormControl.Label>Title</FormControl.Label>
+            <FormControl.Label>Edit Title</FormControl.Label>
             <Input
               placeholder="Title"
+              defaultValue={task.title}
               onChangeText={(value) => setData({ ...formData, title: value })}
               isRequired
               isInvalid={!!errors.title}
@@ -115,14 +111,14 @@ const CreateTask = ({ navigation }) => {
               <FormControl.ErrorMessage>{errors.title}</FormControl.ErrorMessage>
             )}
           </Stack>
-          <Stack mx="4" my="4">
-            <FormControl.Label>Description</FormControl.Label>
+          <Stack mx="4">
+            <FormControl.Label>Edit Description</FormControl.Label>
             <Input
+              defaultValue={task.description}
               placeholder="Description"
               onChangeText={(value) =>
                 setData({ ...formData, description: value })
               }
-              isRequired
               isInvalid={!!errors.description}
             />
             {errors.description && <WarningOutlineIcon color="red.500" size={4} />}
@@ -130,13 +126,14 @@ const CreateTask = ({ navigation }) => {
               <FormControl.ErrorMessage>{errors.description}</FormControl.ErrorMessage>
             )}
           </Stack>
-          <Stack mx="4" my="4">
-            <Btn title="Due Date" onPress={showDatePicker} />
+          <Stack mx="4">
+            <Btn title="Edit Date" onPress={showDatePicker} />
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
               mode="date"
               onConfirm={handleConfirm}
               onCancel={hideDatePicker}
+              date={new Date(task.date)}
             />
 
             <Button onPress={onSubmit} mt="5" colorScheme="cyan">
@@ -150,6 +147,6 @@ const CreateTask = ({ navigation }) => {
   );
 };
 
-export default CreateTask;
+export default EditTask;
 
 const styles = StyleSheet.create({});
