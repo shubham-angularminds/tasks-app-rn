@@ -2,6 +2,7 @@ import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TasksList from "./src/components/TaskList";
+import TasksListNew from "./src/components/TskListNew";
 import CreateTask from "./src/components/CreateTask";
 import EditTask from "./src/components/EditTask";
 import { Provider } from "react-redux";
@@ -23,6 +24,7 @@ function MainTabNavigator() {
       <Tab.Screen name="All Tasks" component={TasksList} />
       <Tab.Screen name="Completed" component={Completed} />
       <Tab.Screen name="UnCompleted" component={UnCompleted} />
+      <Tab.Screen name="New List" component={TasksListNew} />
     </Tab.Navigator>
   );
 }

@@ -71,7 +71,6 @@ const TasksList = ({ status }) => {
 
       <VStack space={4} alignItems="center" px="3">
         {filteredTasks?.map((data, index) => (
-
           <Flex
             key={index}
             alignItems="center"
@@ -87,8 +86,6 @@ const TasksList = ({ status }) => {
             flex="1"
             w="full"
           >
-
-
             <Box flexBasis="0" flexGrow="1">
               <HStack alignItems="center">
                 <Badge
@@ -168,11 +165,10 @@ const TasksList = ({ status }) => {
               </HStack>
             </Box>
           </Flex>
-
         ))}
       </VStack>
       <Fab
-        renderInPortal={true}
+        renderInPortal={false}
         shadow={2}
         size="sm"
         icon={<Icon color="white" as={AntDesign} name="plus" size="sm" />}

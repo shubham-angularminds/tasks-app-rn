@@ -24,6 +24,8 @@ const EditTask = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { task } = route.params;
 
+  console.log('task >>> ', task);
+
   const [formData, setData] = React.useState(task);
   const [errors, setErrors] = React.useState({});
   const [success, setSuccess] = useState(false);
@@ -74,7 +76,7 @@ const EditTask = ({ route, navigation }) => {
     const newErrors = {};
     if (!formData.title) {
       newErrors.title = "Title is required";
-    }
+    }Text
     if (!formData.description) {
       newErrors.description = "Description is required";
     }
