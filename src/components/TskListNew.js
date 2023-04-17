@@ -64,7 +64,6 @@ function Basic() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-
   const [listData, setListData] = useState(tasks);
 
   useEffect(() => {
@@ -98,11 +97,16 @@ function Basic() {
     dispatch(deleteTask(id));
   };
 
-
   const renderItem = ({ item, index }) => (
-    <Box>
+    <Box
+      direction="row"
+      rounded="2"
+      bg="coolGray.100"
+      p="5"
+      flex="1"
+      w="full"
+    >
       <Pressable
-        onPress={() => console.log("You touched me")}
         _dark={{
           bg: "coolGray.800",
         }}
@@ -110,16 +114,42 @@ function Basic() {
           bg: "white",
         }}
       >
-        <Box pl="4" pr="5" py="2">
+        <Box pl="2" pr="5" py="5">
           <HStack alignItems="center" space={3}>
-            {/* <Avatar
-              size="48px"
-              source={{
-                uri: item.avatarUrl,
-              }}
-            /> */}
+
             <VStack w="55%">
-              <Text
+            <Badge
+                  colorScheme="blue"
+                  _text={{
+                    color: "white",
+                  }}
+                  variant="solid"
+                  rounded="2"
+                
+                >
+                  {item.completed ? "Completed" : "Uncompleted"}
+            </Badge>
+            {item.completed ? (
+                <Text
+                  color="coolGray.800"
+                  mt="3"
+                  fontWeight="medium"
+                  fontSize="xl"
+                  strikeThrough
+                >
+                  {item.title}
+                </Text>
+              ) : (
+                <Text
+                  color="coolGray.800"
+                  mt="3"
+                  fontWeight="medium"
+                  fontSize="xl"
+                >
+                  {item.title}
+                </Text>
+              )}
+              {/* <Text
                 color="coolGray.800"
                 _dark={{
                   color: "warmGray.50",
@@ -127,7 +157,7 @@ function Basic() {
                 bold
               >
                 {item.title}
-              </Text>
+              </Text> */}
               <Text
                 color="coolGray.600"
                 _dark={{
@@ -151,8 +181,7 @@ function Basic() {
             <Checkbox
               defaultIsChecked={item.completed}
               onChange={() => handleCheckToggle(item.id)}
-            >
-            </Checkbox>
+            ></Checkbox>
           </HStack>
         </Box>
       </Pressable>
@@ -160,40 +189,69 @@ function Basic() {
   );
 
   const renderHiddenItem = (data, rowMap) => {
-    console.log('data : ', data);
+    console.log("data : ", data);
     return (
-  <HStack flex="1" pl="2">
-  <Pressable w="70" ml="auto" cursor="pointer" bg="coolGray.200" justifyContent="center" onPress={() => closeRow(rowMap, data.item.key)} _pressed={{
-  opacity: 0.5
-}}>
-    <VStack alignItems="center" space={2}>
-      <Icon as={<MaterialIcons name="edit" />} size="xs" color="coolGray.800" />
-      <Text fontSize="xs" fontWeight="medium" color="coolGray.800"
-       onPress={() => {
-        navigation.navigate("EditTask", { task: data.item });
-      }}
-      >
-        Edit
-      </Text>
-    </VStack>
-  </Pressable>
-  <Pressable w="70" cursor="pointer" bg="red.500" justifyContent="center" onPress={() => onRemove(data.id)} _pressed={{
-  opacity: 0.5
-}}>
-    <VStack alignItems="center" space={2}>
-      <Icon as={<MaterialIcons name="delete" />} color="white" size="xs" />
-      <Text color="white" fontSize="xs" fontWeight="medium"
-        onPress={() => {
-            onRemove(data.item.id)  
-        }}
-      >
-        Delete
-      </Text>
-    </VStack>
-  </Pressable>
-</HStack>
- )};
-
+      <HStack flex="1" pl="2">
+        <Pressable
+          w="70"
+          ml="auto"
+          cursor="pointer"
+          bg="coolGray.200"
+          justifyContent="center"
+          onPress={() => closeRow(rowMap, data.item.key)}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <VStack alignItems="center" space={2}>
+            <Icon
+              as={<MaterialIcons name="edit" />}
+              size="xs"
+              color="coolGray.800"
+            />
+            <Text
+              fontSize="xs"
+              fontWeight="medium"
+              color="coolGray.800"
+              onPress={() => {
+                navigation.navigate("EditTask", { task: data.item });
+              }}
+            >
+              Edit
+            </Text>
+          </VStack>
+        </Pressable>
+        <Pressable
+          w="70"
+          cursor="pointer"
+          bg="red.500"
+          justifyContent="center"
+          onPress={() => onRemove(data.id)}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <VStack alignItems="center" space={2}>
+            <Icon
+              as={<MaterialIcons name="delete" />}
+              color="white"
+              size="xs"
+            />
+            <Text
+              color="white"
+              fontSize="xs"
+              fontWeight="medium"
+              onPress={() => {
+                onRemove(data.item.id);
+              }}
+            >
+              Delete
+            </Text>
+          </VStack>
+        </Pressable>
+      </HStack>
+    );
+  };
 
   return (
     <Box bg="white" safeArea flex="1">
@@ -211,7 +269,7 @@ function Basic() {
   );
 }
 
-const TasksList = ({ status }) => {
+const TasksListNew = ({ status }) => {
   // const tasks = useSelector((state) => state.tasks);
   // console.log("status : ", status);
 
@@ -365,4 +423,4 @@ const TasksList = ({ status }) => {
   );
 };
 
-export default TasksList;
+export default TasksListNew;
