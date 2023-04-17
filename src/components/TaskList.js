@@ -16,34 +16,60 @@ import {
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import Tasks from "./TaskData";
+import moment from "moment";
+import { Button } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const formatDate = (date) => {
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-  return new Intl.DateTimeFormat("en-IN", options).format(date);
+  return moment(date).format("DD MMMM yyyy");
 };
 
 const TasksList = () => {
+  const navigation = useNavigation();
+  const [tasks, setTasks] = useState([]);
+
+  const getData = async () => {
+    let transactions = await AsyncStorage.getItem("taskData");
+    if (transactions) {
+      return JSON.parse(transactions);
+    } else {
+      return [];
+    }
+  };
+
+  useEffect(async () => {
+    const SavedTasks = await getData();
+    setTasks(SavedTasks);
+  }, []);
+
   const handleClick = () => {
     console.log("I am Pressed");
   };
 
   const handleAddTask = () => {
     console.log("Add Task Button Clicked");
+    navigation.navigate("CreateTask", { name: "Shubham" });
   };
+
+  console.log("tasks : ", tasks);
 
   return (
     <ScrollView w="full" showsVerticalScrollIndicator={false}>
-      <Center mt="10" mb="8" py="4" bg="blue.700" color="white">
-        <Heading fontSize="xl" color="white">
+      <Center mb="8" py="4" bg="blue.700" color="white">
+        <Heading fontSize="xl" color="white" mb="4">
           Tasks List
         </Heading>
+        <Button
+          colorScheme="primary"
+          title="Create Task"
+          onPress={() => navigation.navigate("CreateTask", { name: "Shubham" })}
+        />
       </Center>
+
       <VStack space={4} alignItems="center" px="3">
-        {Tasks.map((data, index) => (
+        {tasks?.map((data, index) => (
           <Flex
             key={data.id}
             alignItems="center"
@@ -57,6 +83,7 @@ const TasksList = () => {
             bg="coolGray.100"
             p="5"
             flex="1"
+            w="full"
           >
             <Box flexBasis="0" flexGrow="1">
               <HStack alignItems="center">
@@ -68,11 +95,11 @@ const TasksList = () => {
                   variant="solid"
                   rounded="2"
                 >
-                  {data.status}
+                  {""}
                 </Badge>
                 <Spacer />
                 <Text fontSize={10} color="coolGray.800">
-                  {formatDate(data.dueDate)}
+                  Due by {formatDate(data?.dueDate)}
                 </Text>
                 <Spacer />
                 <Pressable onPress={handleClick}>
