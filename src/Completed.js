@@ -1,8 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
-import TasksList from "./components/TaskList";
+import TasksList from "./components/TskListNew";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Completed() {
-  return <TasksList status={true} />;
+  const tasks = useSelector((state) => state.tasks);
+  const filteredTasks = tasks.filter((t) => t.completed === true);
+
+  return <TasksList status='Completed' taskList={filteredTasks}/>;
 }

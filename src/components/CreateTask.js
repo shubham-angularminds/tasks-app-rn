@@ -68,7 +68,6 @@ const CreateTask = ({ navigation }) => {
 
 
   const handleConfirm = (date) => {
-    console.warn("A date has been picked: ", date);
     setData({ ...formData, date: date });
     hideDatePicker();
   };
@@ -86,7 +85,6 @@ const CreateTask = ({ navigation }) => {
   };
 
   const onSubmit = () => {
-    console.log("form data : ", formData);
     if (validate()) {
       const task = {
         id: uuid.v4(),

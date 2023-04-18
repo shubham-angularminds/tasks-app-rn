@@ -13,7 +13,6 @@ const taskReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TASK: {
       const { task } = action.payload;
-      console.log("task >>> ", task);
       return {
         ...state,
         tasks: [...state.tasks, { ...task }],
@@ -21,10 +20,8 @@ const taskReducer = (state = initialState, action) => {
     }
     case DELETE_TASK: {
       const { id } = action.payload;
-      console.log("id : ", id);
       // const newTasks = [];
       const newTasks = state.tasks.filter((task) => task.id !== id);
-      console.log("new tasks : ", newTasks);
       return {
         tasks: newTasks,
       };
@@ -32,7 +29,6 @@ const taskReducer = (state = initialState, action) => {
 
     case TOGGLE_TASK_STATUS: {
       const { id } = action.payload;
-      console.log("id : ", id);
 
       const updatedTasks = state.tasks.map((task) => {
         if (task.id === id) {
@@ -48,7 +44,6 @@ const taskReducer = (state = initialState, action) => {
 
     case UPDATE_TASK: {
       const { task } = action.payload;
-      console.log("task : ", task);
 
       const updatedTasks = state.tasks.map((t) => {
         if (t.id === task.id) {

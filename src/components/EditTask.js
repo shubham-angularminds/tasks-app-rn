@@ -24,6 +24,7 @@ const EditTask = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { task } = route.params;
 
+
   const [formData, setData] = React.useState(task);
   const [errors, setErrors] = React.useState({});
   const [success, setSuccess] = useState(false);
@@ -82,7 +83,6 @@ const EditTask = ({ route, navigation }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-
   const onSubmit = () => {
     if (validate()) {
       const task = {
@@ -111,7 +111,7 @@ const EditTask = ({ route, navigation }) => {
               <FormControl.ErrorMessage>{errors.title}</FormControl.ErrorMessage>
             )}
           </Stack>
-          <Stack mx="4">
+          <Stack mx="4" my="4">
             <FormControl.Label>Edit Description</FormControl.Label>
             <Input
               defaultValue={task.description}
@@ -126,7 +126,7 @@ const EditTask = ({ route, navigation }) => {
               <FormControl.ErrorMessage>{errors.description}</FormControl.ErrorMessage>
             )}
           </Stack>
-          <Stack mx="4">
+          <Stack mx="4" my="4">
             <Btn title="Edit Date" onPress={showDatePicker} />
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
