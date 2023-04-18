@@ -32,7 +32,6 @@ const formatDate = (date) => {
 
 const TasksList = ({ status }) => {
   const tasks = useSelector((state) => state.tasks);
-  console.log("status : ", status);
 
   const filteredTasks =
     status != undefined ? tasks.filter((t) => t.completed === status) : tasks;
@@ -45,7 +44,6 @@ const TasksList = ({ status }) => {
   }, [tasks]);
 
   const handleAddTask = () => {
-    console.log("Add Task Button Clicked");
     navigation.navigate("CreateTask", { name: "Shubham" });
   };
 
@@ -159,6 +157,7 @@ const TasksList = ({ status }) => {
                 <Checkbox
                   defaultIsChecked={data.completed}
                   onChange={() => handleCheckToggle(data.id)}
+                  aria-label={data.completed ? "Task is completed" : "Task is uncompleted"}
                 >
                   Done
                 </Checkbox>

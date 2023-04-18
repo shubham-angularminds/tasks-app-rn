@@ -32,8 +32,9 @@ const formatDate = (date) => {
   return moment(date).format("DD MMMM yyyy");
 };
 
-function Example() {
+function RenderTaskList({ taskList, status }) {
   const [mode, setMode] = useState("Basic");
+
   return (
     <Center h="full">
       <Box
@@ -49,44 +50,20 @@ function Example() {
         w="100%"
       >
         <Heading p="4" pb="3" size="lg">
-          New Task List
+          {status === "all" ? "Tasks List" : status + " Tasks"}
         </Heading>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Basic />
-        </ScrollView>
+        <CardList taskList={taskList} status={status} />
       </Box>
     </Center>
   );
 }
 
-function Basic() {
-  const tasks = useSelector((state) => state.tasks);
+function CardList({ taskList, status }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const [listData, setListData] = useState(tasks);
-
-  useEffect(() => {
-    console.log("Tasks have been updated", tasks);
-    setListData(tasks);
-  }, [tasks]);
-
-  const closeRow = (rowMap, rowKey) => {
-    if (rowMap[rowKey]) {
-      rowMap[rowKey].closeRow();
-    }
-  };
-
-  const deleteRow = (rowMap, rowKey) => {
-    closeRow(rowMap, rowKey);
-    const newData = [...listData];
-    const prevIndex = listData.findIndex((item) => item.key === rowKey);
-    newData.splice(prevIndex, 1);
-    setListData(newData);
-  };
-
-  const onRowDidOpen = (rowKey) => {
-    console.log("This row opened", rowKey);
+  const handleAddTask = () => {
+    navigation.navigate("CreateTask", { name: "Shubham" });
   };
 
   const handleCheckToggle = (id) => {
@@ -99,6 +76,7 @@ function Basic() {
 
   const renderItem = ({ item, index }) => (
     <Box
+      key={index}
       direction="row"
       rounded="2"
       bg="coolGray.100"
@@ -113,29 +91,33 @@ function Basic() {
         _light={{
           bg: "white",
         }}
+        aria-label="Toggle task status"
+        rounded="10"
+        p="2"
       >
-        <Box pl="2" pr="5" py="5">
+        <Box pl="2" pr="5" py="2">
           <HStack alignItems="center" space={3}>
-
-            <VStack w="55%">
-            <Badge
-                  colorScheme="blue"
-                  _text={{
-                    color: "white",
-                  }}
-                  variant="solid"
-                  rounded="2"
-                
-                >
-                  {item.completed ? "Completed" : "Uncompleted"}
-            </Badge>
-            {item.completed ? (
+            <VStack w="50%">
+              <Badge
+                colorScheme="blue"
+                _text={{
+                  color: "white",
+                }}
+                variant="solid"
+                rounded="2"
+                aria-label="Task status"
+                w="70%"
+              >
+                {item.completed ? "Completed" : "Uncompleted"}
+              </Badge>
+              {item.completed ? (
                 <Text
                   color="coolGray.800"
                   mt="3"
                   fontWeight="medium"
                   fontSize="xl"
                   strikeThrough
+                  aria-label={`Task title: ${item.title}`}
                 >
                   {item.title}
                 </Text>
@@ -145,24 +127,18 @@ function Basic() {
                   mt="3"
                   fontWeight="medium"
                   fontSize="xl"
+                  aria-label={`Task title: ${item.title}`}
                 >
                   {item.title}
                 </Text>
               )}
-              {/* <Text
-                color="coolGray.800"
-                _dark={{
-                  color: "warmGray.50",
-                }}
-                bold
-              >
-                {item.title}
-              </Text> */}
+
               <Text
                 color="coolGray.600"
                 _dark={{
                   color: "warmGray.200",
                 }}
+                aria-label="Task description"
               >
                 {item.description}
               </Text>
@@ -173,14 +149,19 @@ function Basic() {
                   color: "warmGray.50",
                 }}
                 alignSelf="flex-start"
+                aria-label="Task date"
               >
-                {formatDate(item.date)}
+                Due By {formatDate(item.date)}
               </Text>
             </VStack>
             <Spacer />
             <Checkbox
               defaultIsChecked={item.completed}
+              _checked={item.completed}
               onChange={() => handleCheckToggle(item.id)}
+              aria-label={
+                item.completed ? "Task is completed" : "Task is uncompleted"
+              }
             ></Checkbox>
           </HStack>
         </Box>
@@ -189,7 +170,6 @@ function Basic() {
   );
 
   const renderHiddenItem = (data, rowMap) => {
-    console.log("data : ", data);
     return (
       <HStack flex="1" pl="2">
         <Pressable
@@ -197,8 +177,8 @@ function Basic() {
           ml="auto"
           cursor="pointer"
           bg="coolGray.200"
+          my="10"
           justifyContent="center"
-          onPress={() => closeRow(rowMap, data.item.key)}
           _pressed={{
             opacity: 0.5,
           }}
@@ -225,8 +205,10 @@ function Basic() {
           w="70"
           cursor="pointer"
           bg="red.500"
+          p="0"
+          my="10"
           justifyContent="center"
-          onPress={() => onRemove(data.id)}
+          onPress={() => onRemove(data.item.id)}
           _pressed={{
             opacity: 0.5,
           }}
@@ -256,171 +238,30 @@ function Basic() {
   return (
     <Box bg="white" safeArea flex="1">
       <SwipeListView
-        data={listData}
+        data={taskList}
         renderItem={renderItem}
         renderHiddenItem={renderHiddenItem}
         rightOpenValue={-130}
         previewRowKey={"0"}
         previewOpenValue={-40}
         previewOpenDelay={3000}
-        onRowDidOpen={onRowDidOpen}
+        // onRowDidOpen={onRowDidOpen}
+      />
+      <Fab
+        renderInPortal={true}
+        shadow={2}
+        size="sm"
+        icon={<Icon color="white" as={AntDesign} name="plus" size="sm" />}
+        onPress={handleAddTask}
+        bg="blue.700"
+        mb="10"
       />
     </Box>
   );
 }
 
-const TasksListNew = ({ status }) => {
-  // const tasks = useSelector((state) => state.tasks);
-  // console.log("status : ", status);
-
-  // const filteredTasks =
-  //   status != undefined ? tasks.filter((t) => t.completed === status) : tasks;
-
-  // const dispatch = useDispatch();
-  // const navigation = useNavigation();
-
-  // useEffect(() => {
-  //   console.log("Tasks have been updated", tasks);
-  // }, [tasks]);
-
-  // const handleAddTask = () => {
-  //   console.log("Add Task Button Clicked");
-  //   navigation.navigate("CreateTask", { name: "Shubham" });
-  // };
-
-  // const onRemove = (id) => {
-  //   dispatch(deleteTask(id));
-  // };
-
-  // const handleCheckToggle = (id) => {
-  //   dispatch(toggleTaskStatus(id));
-  // };
-
-  return (
-    <Example />
-
-    //   <ScrollView w="full" showsVerticalScrollIndicator={false}>
-    //     <Center mb="8" py="4" bg="blue.700" color="white">
-    //       <Heading fontSize="xl" color="white" mb="4" mt="10">
-    //         {status == undefined
-    //           ? "All Tasks"
-    //           : status
-    //             ? "Completed"
-    //             : "Uncompleted"}
-    //       </Heading>
-    //     </Center>
-
-    //     <VStack space={4} alignItems="center" px="3">
-    //       {filteredTasks?.map((data, index) => (
-
-    //         <Flex
-    //           key={index}
-    //           alignItems="center"
-    //           mb="2"
-    //           direction="row"
-    //           rounded="8"
-    //           overflow="hidden"
-    //           borderWidth="1"
-    //           borderColor="coolGray.300"
-    //           shadow="3"
-    //           bg="coolGray.100"
-    //           p="5"
-    //           flex="1"
-    //           w="full"
-    //         >
-
-    //           <Box flexBasis="0" flexGrow="1">
-    //             <HStack alignItems="center">
-    //               <Badge
-    //                 colorScheme="blue"
-    //                 _text={{
-    //                   color: "white",
-    //                 }}
-    //                 variant="solid"
-    //                 rounded="2"
-    //               >
-    //                 {data.completed ? "Completed" : "Uncompleted"}
-    //               </Badge>
-    //               <Spacer />
-    //               <Text fontSize={10} color="coolGray.800">
-    //                 Due by {formatDate(data.date)}
-    //               </Text>
-    //               <Spacer />
-    //               <Menu
-    //                 w="190"
-    //                 trigger={(triggerProps) => {
-    //                   return (
-    //                     <Pressable
-    //                       accessibilityLabel="More options menu"
-    //                       {...triggerProps}
-    //                     >
-    //                       <HamburgerIcon />
-    //                     </Pressable>
-    //                   );
-    //                 }}
-    //               >
-    //                 <Menu.Item>
-    //                   <Button
-    //                     title="Edit"
-    //                     onPress={() => {
-    //                       navigation.navigate("EditTask", { task: data });
-    //                     }}
-    //                   />
-    //                 </Menu.Item>
-    //                 <Menu.Item>
-    //                   <Button title="Delete" onPress={() => onRemove(data.id)} />
-    //                 </Menu.Item>
-    //               </Menu>
-    //             </HStack>
-    //             {data.completed ? (
-    //               <Text
-    //                 color="coolGray.800"
-    //                 mt="3"
-    //                 fontWeight="medium"
-    //                 fontSize="xl"
-    //                 strikeThrough
-    //               >
-    //                 {data.title}
-    //               </Text>
-    //             ) : (
-    //               <Text
-    //                 color="coolGray.800"
-    //                 mt="3"
-    //                 fontWeight="medium"
-    //                 fontSize="xl"
-    //               >
-    //                 {data.title}
-    //               </Text>
-    //             )}
-
-    //             <HStack alignItems="center">
-    //               <Text mt="2" fontSize="sm" color="coolGray.700">
-    //                 {data.description}
-    //               </Text>
-    //               <Spacer />
-
-    //               <Checkbox
-    //                 defaultIsChecked={data.completed}
-    //                 onChange={() => handleCheckToggle(data.id)}
-    //               >
-    //                 Done
-    //               </Checkbox>
-    //             </HStack>
-    //           </Box>
-    //         </Flex>
-
-    //       ))}
-    //     </VStack>
-    //     <Fab
-    //       renderInPortal={true}
-    //       shadow={2}
-    //       size="sm"
-    //       icon={<Icon color="white" as={AntDesign} name="plus" size="sm" />}
-    //       onPress={handleAddTask}
-    //       bg="blue.700"
-    //     />
-    //   </ScrollView >
-  );
+const TasksListNew = ({ taskList, status }) => {
+  return <RenderTaskList taskList={taskList} status={status} />;
 };
 
 export default TasksListNew;
