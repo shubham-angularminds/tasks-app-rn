@@ -182,6 +182,9 @@ function CardList({ taskList, status }) {
           _pressed={{
             opacity: 0.5,
           }}
+          onPress={() => {
+            navigation.navigate("EditTask", { task: data.item });            
+          }}
         >
           <VStack alignItems="center" space={2}>
             <Icon
@@ -189,14 +192,7 @@ function CardList({ taskList, status }) {
               size="xs"
               color="coolGray.800"
             />
-            <Text
-              fontSize="xs"
-              fontWeight="medium"
-              color="coolGray.800"
-              onPress={() => {
-                navigation.navigate("EditTask", { task: data.item });
-              }}
-            >
+            <Text fontSize="xs" fontWeight="medium" color="coolGray.800">
               Edit
             </Text>
           </VStack>
@@ -219,14 +215,7 @@ function CardList({ taskList, status }) {
               color="white"
               size="xs"
             />
-            <Text
-              color="white"
-              fontSize="xs"
-              fontWeight="medium"
-              onPress={() => {
-                onRemove(data.item.id);
-              }}
-            >
+            <Text color="white" fontSize="xs" fontWeight="medium">
               Delete
             </Text>
           </VStack>

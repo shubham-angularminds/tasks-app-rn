@@ -24,7 +24,6 @@ const EditTask = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { task } = route.params;
 
-
   const [formData, setData] = React.useState(task);
   const [errors, setErrors] = React.useState({});
   const [success, setSuccess] = useState(false);
@@ -79,6 +78,9 @@ const EditTask = ({ route, navigation }) => {
     if (!formData.description) {
       newErrors.description = "Description is required";
     }
+    if (!formData.date) {
+      newErrors.date = "Date is required";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -108,7 +110,9 @@ const EditTask = ({ route, navigation }) => {
             />
             {errors.title && <WarningOutlineIcon color="red.500" size={4} />}
             {errors.title && (
-              <FormControl.ErrorMessage>{errors.title}</FormControl.ErrorMessage>
+              <FormControl.ErrorMessage>
+                {errors.title}
+              </FormControl.ErrorMessage>
             )}
           </Stack>
           <Stack mx="4" my="4">
@@ -121,9 +125,13 @@ const EditTask = ({ route, navigation }) => {
               }
               isInvalid={!!errors.description}
             />
-            {errors.description && <WarningOutlineIcon color="red.500" size={4} />}
             {errors.description && (
-              <FormControl.ErrorMessage>{errors.description}</FormControl.ErrorMessage>
+              <WarningOutlineIcon color="red.500" size={4} />
+            )}
+            {errors.description && (
+              <FormControl.ErrorMessage>
+                {errors.description}
+              </FormControl.ErrorMessage>
             )}
           </Stack>
           <Stack mx="4" my="4">
@@ -135,6 +143,13 @@ const EditTask = ({ route, navigation }) => {
               onCancel={hideDatePicker}
               date={new Date(task.date)}
             />
+
+            {errors.date && <WarningOutlineIcon color="red.500" size={4} />}
+            {errors.date && (
+              <FormControl.ErrorMessage>
+                {errors.date}
+              </FormControl.ErrorMessage>
+            )}
 
             <Button onPress={onSubmit} mt="5" colorScheme="cyan">
               Submit

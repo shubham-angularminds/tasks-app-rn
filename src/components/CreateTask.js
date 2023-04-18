@@ -28,7 +28,6 @@ const CreateTask = ({ navigation }) => {
   const [errors, setErrors] = React.useState({});
   const [success, setSuccess] = useState(false);
 
-
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const showDatePicker = () => {
@@ -66,7 +65,6 @@ const CreateTask = ({ navigation }) => {
     );
   }
 
-
   const handleConfirm = (date) => {
     setData({ ...formData, date: date });
     hideDatePicker();
@@ -79,6 +77,9 @@ const CreateTask = ({ navigation }) => {
     }
     if (!formData.description) {
       newErrors.description = "Description is required";
+    }
+    if (!formData.date) {
+      newErrors.date = "Date is required";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -110,7 +111,9 @@ const CreateTask = ({ navigation }) => {
             />
             {errors.title && <WarningOutlineIcon color="red.500" size={4} />}
             {errors.title && (
-              <FormControl.ErrorMessage>{errors.title}</FormControl.ErrorMessage>
+              <FormControl.ErrorMessage>
+                {errors.title}
+              </FormControl.ErrorMessage>
             )}
           </Stack>
           <Stack mx="4" my="4">
@@ -123,9 +126,13 @@ const CreateTask = ({ navigation }) => {
               isRequired
               isInvalid={!!errors.description}
             />
-            {errors.description && <WarningOutlineIcon color="red.500" size={4} />}
             {errors.description && (
-              <FormControl.ErrorMessage>{errors.description}</FormControl.ErrorMessage>
+              <WarningOutlineIcon color="red.500" size={4} />
+            )}
+            {errors.description && (
+              <FormControl.ErrorMessage>
+                {errors.description}
+              </FormControl.ErrorMessage>
             )}
           </Stack>
           <Stack mx="4" my="4">
@@ -136,6 +143,10 @@ const CreateTask = ({ navigation }) => {
               onConfirm={handleConfirm}
               onCancel={hideDatePicker}
             />
+            {errors.date && <WarningOutlineIcon color="red.500" size={4} />}
+            {errors.date && (
+              <FormControl.ErrorMessage>{errors.date}</FormControl.ErrorMessage>
+            )}
 
             <Button onPress={onSubmit} mt="5" colorScheme="cyan">
               Submit
