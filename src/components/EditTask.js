@@ -91,7 +91,7 @@ const EditTask = ({ route, navigation }) => {
         ...formData,
       };
       dispatch(updateTask(task));
-      setSuccess(true);
+      navigation.navigate("Home");
     }
   };
 
@@ -146,9 +146,7 @@ const EditTask = ({ route, navigation }) => {
 
             {errors.date && <WarningOutlineIcon color="red.500" size={4} />}
             {errors.date && (
-              <FormControl.ErrorMessage>
-                {errors.date}
-              </FormControl.ErrorMessage>
+              <FormControl.ErrorMessage>{errors.date}</FormControl.ErrorMessage>
             )}
 
             <Button onPress={onSubmit} mt="5" colorScheme="cyan">
