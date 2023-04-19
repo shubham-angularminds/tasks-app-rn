@@ -155,14 +155,17 @@ function CardList({ taskList, status }) {
               </Text>
             </VStack>
             <Spacer />
-            <Checkbox
-              defaultIsChecked={item.completed}
-              _checked={item.completed}
-              onChange={() => handleCheckToggle(item.id)}
-              aria-label={
-                item.completed ? "Task is completed" : "Task is uncompleted"
-              }
-            ></Checkbox>
+            <TouchableHighlight>
+              <Checkbox
+                defaultIsChecked={item.completed}
+                _checked={item.completed}
+                onChange={() => handleCheckToggle(item.id)}
+                size="lg"
+                aria-label={
+                  item.completed ? "Task is completed" : "Task is uncompleted"
+                }
+              ></Checkbox>
+            </TouchableHighlight>
           </HStack>
         </Box>
       </Pressable>
@@ -183,7 +186,7 @@ function CardList({ taskList, status }) {
             opacity: 0.5,
           }}
           onPress={() => {
-            navigation.navigate("EditTask", { task: data.item });            
+            navigation.navigate("EditTask", { task: data.item });
           }}
         >
           <VStack alignItems="center" space={2}>
