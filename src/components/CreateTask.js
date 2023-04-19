@@ -99,7 +99,7 @@ const CreateTask = ({ navigation }) => {
 
   return (
     <Center flex={1} px="2">
-      <Box w="100%" maxWidth="300px">
+      <Box w="100%" maxWidth="300px" rounded="10" bg="white" pt="10" pb="10">
         <FormControl isRequired>
           <Stack mx="4">
             <FormControl.Label>Title</FormControl.Label>

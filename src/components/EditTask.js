@@ -97,7 +97,7 @@ const EditTask = ({ route, navigation }) => {
 
   return (
     <Center flex={1} px="2">
-      <Box w="100%" maxWidth="300px">
+      <Box w="100%" maxWidth="300px" rounded="10" bg="white" pt="10" pb="10">
         <FormControl isRequired>
           <Stack mx="4">
             <FormControl.Label>Edit Title</FormControl.Label>
@@ -135,7 +135,7 @@ const EditTask = ({ route, navigation }) => {
             )}
           </Stack>
           <Stack mx="4" my="4">
-            <Btn title="Edit Date" onPress={showDatePicker} />
+            <Btn title="Edit Due Date" onPress={showDatePicker} />
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
               mode="date"
